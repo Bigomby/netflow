@@ -130,6 +130,7 @@ func (m *Message) UnmarshalSets(r io.Reader, s session.Session, t *Translate) er
 					debugLog.Printf("no session, storing %d raw bytes in data set\n", len(data))
 				}
 				ds.Bytes = data
+				m.DataSets = append(m.DataSets, ds)
 				continue
 			}
 			if tm, ok = s.GetTemplate(header.ID); !ok {
@@ -137,6 +138,7 @@ func (m *Message) UnmarshalSets(r io.Reader, s session.Session, t *Translate) er
 					debugLog.Printf("no template for id=%d, storing %d raw bytes in data set\n", header.ID, len(data))
 				}
 				ds.Bytes = data
+				m.DataSets = append(m.DataSets, ds)
 				continue
 			}
 			if tr, ok = tm.(TemplateRecord); !ok {
@@ -144,6 +146,7 @@ func (m *Message) UnmarshalSets(r io.Reader, s session.Session, t *Translate) er
 					debugLog.Printf("no template record, got %T, storing %d raw bytes in data set\n", tm, len(data))
 				}
 				ds.Bytes = data
+				m.DataSets = append(m.DataSets, ds)
 				continue
 			}
 			if err := ds.Unmarshal(bytes.NewBuffer(data), tr, t); err != nil {
